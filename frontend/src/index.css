@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ---- NBSS BRAND THEME ----
+     Pulled from the official NBSS/PFI ID card: deep navy header/borders,
+     saffron accent, tricolor (saffron/white/green) stripe. Swap these if
+     the palette is ever refined further — every component reads color
+     through these variables, so this is the only place a re-theme touches. */
+  --color-brand: #12285c;        /* card navy — headers, borders, primary text accents */
+  --color-brand-dark: #0a1a40;   /* deeper navy — hover/active state */
+  --color-brand-light: #e9edf6;  /* pale navy tint — subtle backgrounds */
+  --color-saffron: #ff9933;      /* tricolor saffron */
+  --color-green: #138808;        /* tricolor green */
+  --color-surface: #ffffff;
+  --color-ink: #14213d;
+  --color-muted: #5b6b8c;
+
+  --font-display: "Georgia", "Times New Roman", serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+body {
+  @apply bg-gray-50 text-ink font-body;
+}
+
+/* Thin tricolor accent stripe, used under headers/cards for the ID-card feel */
+.tricolor-stripe {
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    var(--color-saffron) 0%,
+    var(--color-saffron) 33%,
+    #ffffff 33%,
+    #ffffff 66%,
+    var(--color-green) 66%,
+    var(--color-green) 100%
+  );
+}
+
+/* Dashed placeholder circle for wherever the real NBSS logo will go */
+.logo-placeholder {
+  @apply flex items-center justify-center rounded-full border-2 border-dashed;
+  border-color: var(--color-saffron);
+  color: var(--color-brand);
+  background: var(--color-brand-light);
+}
