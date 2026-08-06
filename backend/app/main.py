@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import Base, engine
-from app.routers import auth, members, events
+from app.routers import auth, members, events, public
 
 # Simple create-all is fine at this scale (no migrations needed for ~100 rows,
 # fixed schema). If the schema needs to evolve later, introduce Alembic.
@@ -22,6 +22,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(members.router)
 app.include_router(events.router)
+app.include_router(public.router)
 
 
 @app.get("/health")
