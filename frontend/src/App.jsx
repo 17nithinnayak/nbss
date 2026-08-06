@@ -10,66 +10,70 @@ import { AdminPanel } from "./pages/AdminPanel";
 import { Account } from "./pages/Account";
 import { Events } from "./pages/Events";
 import { EventDetail } from "./pages/EventDetail";
+import { VerifyMember } from "./pages/VerifyMember";
 
-function AppRoutes() {
-  // Tied to the current path so the ErrorBoundary clears itself whenever
-  // the user navigates, instead of a crash on one page haunting every
-  // page visited afterward.
+function AppShell() {
+  // Wraps EVERYTHING (Navbar + auth context + routes) so a crash anywhere —
+  // not just inside a page — shows a message instead of blanking the app.
   const location = useLocation();
 
   return (
     <ErrorBoundary resetKey={location.pathname}>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <Directory />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/members/:id"
-          element={
-            <RequireAuth>
-              <MemberDetail />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/account"
-          element={
-            <RequireAuth>
-              <Account />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/events"
-          element={
-            <RequireAuth>
-              <Events />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/events/:id"
-          element={
-            <RequireAuth>
-              <EventDetail />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/admin"
-          element={
-            <RequireSuperAdmin>
-              <AdminPanel />
-            </RequireSuperAdmin>
-          }
-        />
-      </Routes>
+      <AuthProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/verify/:id" element={<VerifyMember />} />
+          <Route
+            path="/"
+            element={
+              <RequireAuth>
+                <Directory />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/members/:id"
+            element={
+              <RequireAuth>
+                <MemberDetail />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <RequireAuth>
+                <Account />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/events"
+            element={
+              <RequireAuth>
+                <Events />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/events/:id"
+            element={
+              <RequireAuth>
+                <EventDetail />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <RequireSuperAdmin>
+                <AdminPanel />
+              </RequireSuperAdmin>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
@@ -77,10 +81,7 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Navbar />
-        <AppRoutes />
-      </AuthProvider>
+      <AppShell />
     </BrowserRouter>
   );
 }

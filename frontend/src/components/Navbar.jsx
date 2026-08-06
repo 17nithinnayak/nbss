@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { OrgMasthead } from "./OrgMasthead";
@@ -5,44 +6,73 @@ import { OrgMasthead } from "./OrgMasthead";
 export function Navbar() {
   const { user, logout, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   function handleLogout() {
+    setMenuOpen(false);
     logout();
     navigate("/login");
   }
 
+  const linkClass = "text-ink hover:text-brand transition-colors block sm:inline";
+
   return (
-    <header className="bg-surface">
-      <div className="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/">
+    <header className="bg-surface relative">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+        <Link to="/" onClick={() => setMenuOpen(false)}>
           <OrgMasthead compact />
         </Link>
 
         {user && (
-          <nav className="flex items-center gap-6 text-sm">
-            <Link to="/" className="text-ink hover:text-brand transition-colors">
-              Directory
-            </Link>
-            <Link to="/events" className="text-ink hover:text-brand transition-colors">
-              Events
-            </Link>
-            {isSuperAdmin && (
-              <Link to="/admin" className="text-ink hover:text-brand transition-colors">
-                Manage members
-              </Link>
-            )}
-            <Link to="/account" className="text-ink hover:text-brand transition-colors">
-              {user.full_name.split(" ")[0]}
-            </Link>
+          <>
+            {/* Desktop nav */}
+            <nav className="hidden sm:flex items-center gap-6 text-sm">
+              <Link to="/" className={linkClass}>Directory</Link>
+              <Link to="/events" className={linkClass}>Events</Link>
+              {isSuperAdmin && <Link to="/admin" className={linkClass}>Manage members</Link>}
+              <Link to="/account" className={linkClass}>{user.full_name.split(" ")[0]}</Link>
+              <button onClick={handleLogout} className="text-muted hover:text-brand transition-colors">
+                Log out
+              </button>
+            </nav>
+
+            {/* Mobile hamburger */}
             <button
-              onClick={handleLogout}
-              className="text-muted hover:text-brand transition-colors"
+              onClick={() => setMenuOpen((v) => !v)}
+              className="sm:hidden p-2 -mr-2 text-brand"
+              aria-label="Toggle menu"
             >
-              Log out
+              {menuOpen ? (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
+                </svg>
+              ) : (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+                </svg>
+              )}
             </button>
-          </nav>
+          </>
         )}
       </div>
+
+      {/* Mobile dropdown */}
+      {user && menuOpen && (
+        <nav className="sm:hidden border-t border-gray-200 px-4 py-3 flex flex-col gap-3 text-sm bg-surface">
+          <Link to="/" className={linkClass} onClick={() => setMenuOpen(false)}>Directory</Link>
+          <Link to="/events" className={linkClass} onClick={() => setMenuOpen(false)}>Events</Link>
+          {isSuperAdmin && (
+            <Link to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Manage members</Link>
+          )}
+          <Link to="/account" className={linkClass} onClick={() => setMenuOpen(false)}>
+            {user.full_name.split(" ")[0]}
+          </Link>
+          <button onClick={handleLogout} className="text-muted hover:text-brand transition-colors text-left">
+            Log out
+          </button>
+        </nav>
+      )}
+
       <div className="tricolor-stripe" />
     </header>
   );

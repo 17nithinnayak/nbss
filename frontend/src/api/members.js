@@ -16,6 +16,12 @@ export const eventsApi = {
   remove: (id) => api.delete(`/events/${id}`),
 };
 
+export const publicApi = {
+  // No auth token required — used by the QR-code verification page,
+  // which scanning security/event staff won't be logged in for.
+  getMember: (id) => api.get(`/public/members/${id}`).then((r) => r.data),
+};
+
 export const authApi = {
   login: (email, password) =>
     api.post("/auth/login", { email, password }).then((r) => r.data),

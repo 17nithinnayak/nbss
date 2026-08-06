@@ -100,7 +100,7 @@ export function EventForm({ initial, onSubmit, onCancel }) {
         <label className="block text-sm text-ink mb-2">Photos (optional)</label>
         <div className="space-y-2">
           {form.photos.map((photo, i) => (
-            <div key={i} className="flex gap-2 items-start">
+            <div key={i} className="flex flex-col sm:flex-row gap-2 sm:items-start">
               <input
                 type="text"
                 placeholder="Photo URL"

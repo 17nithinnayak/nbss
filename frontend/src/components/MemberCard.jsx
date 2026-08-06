@@ -19,7 +19,7 @@ export function MemberCard({ member }) {
           </div>
         )}
       </div>
-      <div className="p-4 border-t-2 border-saffron/40">
+      <div className="p-4 border-t-2" style={{ borderColor: "rgba(255, 153, 51, 0.4)" }}>
         <h3 className="font-display text-base text-ink leading-snug">{member.full_name}</h3>
         <p className="text-sm text-saffron font-medium mt-0.5 uppercase tracking-wide">
           {member.title}

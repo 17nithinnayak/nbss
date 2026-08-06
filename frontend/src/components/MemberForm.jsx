@@ -56,24 +56,24 @@ export function MemberForm({ initial, onSubmit, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 bg-surface border border-gray-200 rounded-lg p-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Full name" value={form.full_name} onChange={(v) => update("full_name", v)} required />
         <Field label="Title / Role" value={form.title} onChange={(v) => update("title", v)} required placeholder="e.g. National Chairman" />
       </div>
 
       {!isEdit && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Field label="Email" type="email" value={form.email} onChange={(v) => update("email", v)} required />
           <Field label="Initial password" type="text" value={form.password} onChange={(v) => update("password", v)} required />
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field label="Phone (optional)" value={form.phone || ""} onChange={(v) => update("phone", v)} />
         <Field label="Photo URL (optional)" value={form.photo_url || ""} onChange={(v) => update("photo_url", v)} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm text-ink mb-1">Blood group (optional)</label>
           <select
@@ -105,7 +105,7 @@ export function MemberForm({ initial, onSubmit, onCancel }) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field
           label="Display order (lower shows first)"
           type="number"
