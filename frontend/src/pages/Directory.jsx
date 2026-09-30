@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { membersApi } from "../api/members";
+import { publicApi } from "../api/members";
 import { MemberCard } from "../components/MemberCard";
 
 export function Directory() {
@@ -8,8 +8,8 @@ export function Directory() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    membersApi
-      .list()
+    publicApi
+      .listMembers()
       .then(setMembers)
       .catch(() => setError("Couldn't load the directory. Please refresh."))
       .finally(() => setLoading(false));

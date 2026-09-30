@@ -23,53 +23,60 @@ export function Navbar() {
           <OrgMasthead compact />
         </Link>
 
-        {user && (
-          <>
-            {/* Desktop nav */}
-            <nav className="hidden sm:flex items-center gap-6 text-sm">
-              <Link to="/" className={linkClass}>Directory</Link>
+        <>
+          <nav className="hidden sm:flex items-center gap-6 text-sm">
+            <Link to="/members" className={linkClass}>Members</Link>
+            {user && (
+              <>
               <Link to="/events" className={linkClass}>Events</Link>
               {isSuperAdmin && <Link to="/admin" className={linkClass}>Manage members</Link>}
               <Link to="/account" className={linkClass}>{user.full_name.split(" ")[0]}</Link>
               <button onClick={handleLogout} className="text-muted hover:text-brand transition-colors">
                 Log out
               </button>
-            </nav>
+              </>
+            )}
+            {!user && <Link to="/login" className={linkClass}>Log in</Link>}
+          </nav>
 
-            {/* Mobile hamburger */}
-            <button
-              onClick={() => setMenuOpen((v) => !v)}
-              className="sm:hidden p-2 -mr-2 text-brand"
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
-                </svg>
-              ) : (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-                </svg>
-              )}
-            </button>
-          </>
-        )}
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="sm:hidden p-2 -mr-2 text-brand"
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 6l12 12M6 18L18 6" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
+              </svg>
+            )}
+          </button>
+        </>
       </div>
 
       {/* Mobile dropdown */}
-      {user && menuOpen && (
+      {menuOpen && (
         <nav className="sm:hidden border-t border-gray-200 px-4 py-3 flex flex-col gap-3 text-sm bg-surface">
-          <Link to="/" className={linkClass} onClick={() => setMenuOpen(false)}>Directory</Link>
-          <Link to="/events" className={linkClass} onClick={() => setMenuOpen(false)}>Events</Link>
-          {isSuperAdmin && (
-            <Link to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Manage members</Link>
+          <Link to="/members" className={linkClass} onClick={() => setMenuOpen(false)}>Members</Link>
+          {user ? (
+            <>
+              <Link to="/events" className={linkClass} onClick={() => setMenuOpen(false)}>Events</Link>
+              {isSuperAdmin && (
+                <Link to="/admin" className={linkClass} onClick={() => setMenuOpen(false)}>Manage members</Link>
+              )}
+              <Link to="/account" className={linkClass} onClick={() => setMenuOpen(false)}>
+                {user.full_name.split(" ")[0]}
+              </Link>
+              <button onClick={handleLogout} className="text-muted hover:text-brand transition-colors text-left">
+                Log out
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className={linkClass} onClick={() => setMenuOpen(false)}>Log in</Link>
           )}
-          <Link to="/account" className={linkClass} onClick={() => setMenuOpen(false)}>
-            {user.full_name.split(" ")[0]}
-          </Link>
-          <button onClick={handleLogout} className="text-muted hover:text-brand transition-colors text-left">
-            Log out
-          </button>
         </nav>
       )}
 

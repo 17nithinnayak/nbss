@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { RequireAuth, RequireSuperAdmin } from "./components/ProtectedRoute";
 import { Navbar } from "./components/Navbar";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { Landing } from "./pages/Landing";
 import { Login } from "./pages/Login";
 import { Directory } from "./pages/Directory";
 import { MemberDetail } from "./pages/MemberDetail";
@@ -24,22 +25,9 @@ function AppShell() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/verify/:id" element={<VerifyMember />} />
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <Directory />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/members/:id"
-            element={
-              <RequireAuth>
-                <MemberDetail />
-              </RequireAuth>
-            }
-          />
+          <Route path="/" element={<Landing />} />
+          <Route path="/members" element={<Directory />} />
+          <Route path="/members/:id" element={<MemberDetail />} />
           <Route
             path="/account"
             element={

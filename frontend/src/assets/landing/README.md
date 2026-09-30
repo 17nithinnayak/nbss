@@ -1,0 +1,1 @@
+Add landing slideshow photos to this folder (`.jpg`, `.jpeg`, `.png`, `.webp`, or `.avif`). They are picked up automatically at build time and sorted by filename. When this folder contains photos, they replace the temporary online slideshow images.

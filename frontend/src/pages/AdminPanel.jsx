@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import JSZip from "jszip";
+import QRCode from "qrcode";
 import { membersApi } from "../api/members";
 import { MemberForm } from "../components/MemberForm";
 import { QRCodeBlock } from "../components/QRCodeBlock";
@@ -11,6 +13,7 @@ export function AdminPanel() {
   const [mode, setMode] = useState(null); // null | "add" | { editId }
   const [error, setError] = useState("");
   const [qrOpenId, setQrOpenId] = useState(null);
+  const [exporting, setExporting] = useState(false);
 
   function refresh() {
     return membersApi.list().then(setMembers);
@@ -41,6 +44,53 @@ export function AdminPanel() {
     await refresh();
   }
 
+  async function handleExportQrs() {
+    setExporting(true);
+    setError("");
+    try {
+      const archive = new JSZip();
+      await Promise.all(members.map(async (member) => {
+        const qrUrl = await QRCode.toDataURL(`${window.location.origin}/verify/${member.id}`, {
+          width: 480,
+          margin: 2,
+        });
+        const qrImage = new Image();
+        qrImage.src = qrUrl;
+        await qrImage.decode();
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 560;
+        canvas.height = 590;
+        const context = canvas.getContext("2d");
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "#14213d";
+        context.font = "bold 30px sans-serif";
+        context.textAlign = "center";
+        context.fillText(member.full_name, canvas.width / 2, 58, 520);
+        context.drawImage(qrImage, 40, 90, 480, 480);
+
+        const png = await new Promise((resolve, reject) => {
+          canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("PNG creation failed")), "image/png");
+        });
+        const safeName = member.full_name.trim().replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
+        archive.file(`${safeName || "member"}-${member.id}.png`, png);
+      }));
+
+      const archiveBlob = await archive.generateAsync({ type: "blob" });
+      const downloadUrl = URL.createObjectURL(archiveBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "nbss-member-qr-codes.zip";
+      link.click();
+      URL.revokeObjectURL(downloadUrl);
+    } catch {
+      setError("Couldn't export the QR codes. Please try again.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
   const editingMember =
     mode && typeof mode === "object" ? members.find((m) => m.id === mode.editId) : null;
 
@@ -52,12 +102,21 @@ export function AdminPanel() {
           <p className="text-sm text-muted mt-1">Add, edit, or remove community members.</p>
         </div>
         {!mode && (
-          <button
-            onClick={() => setMode("add")}
-            className="bg-brand hover:bg-brand-dark text-white rounded-md px-4 py-2 text-sm font-medium transition-colors self-start sm:self-auto"
-          >
-            + Add member
-          </button>
+          <div className="flex flex-wrap gap-2 self-start sm:self-auto">
+            <button
+              onClick={handleExportQrs}
+              disabled={exporting || loading || members.length === 0}
+              className="border border-brand text-brand hover:bg-brand-light disabled:opacity-50 rounded-md px-4 py-2 text-sm font-medium transition-colors"
+            >
+              {exporting ? "Preparing QR codes…" : "Export QR codes"}
+            </button>
+            <button
+              onClick={() => setMode("add")}
+              className="bg-brand hover:bg-brand-dark text-white rounded-md px-4 py-2 text-sm font-medium transition-colors"
+            >
+              + Add member
+            </button>
+          </div>
         )}
       </div>
 

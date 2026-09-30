@@ -19,7 +19,9 @@ export const eventsApi = {
 export const publicApi = {
   // No auth token required — used by the QR-code verification page,
   // which scanning security/event staff won't be logged in for.
+  listMembers: () => api.get("/public/members").then((r) => r.data),
   getMember: (id) => api.get(`/public/members/${id}`).then((r) => r.data),
+  getProfile: (id) => api.get(`/public/profiles/${id}`).then((r) => r.data),
 };
 
 export const authApi = {

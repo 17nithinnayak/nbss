@@ -133,3 +133,25 @@ class MemberPublicOut(BaseModel):
     blood_group: str | None
     valid_until: date | None
     is_active: bool
+
+
+class MemberDirectoryOut(BaseModel):
+    """Profile fields suitable for listing in the public directory."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    full_name: str
+    title: str
+    photo_url: str | None
+
+
+class PublicMemberProfileOut(BaseModel):
+    """Public profile fields; deliberately omits member contact details."""
+    model_config = ConfigDict(from_attributes=True)
+
+    id: str
+    full_name: str
+    title: str
+    photo_url: str | None
+    bio: str | None
+    is_active: bool
